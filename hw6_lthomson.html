@@ -51,9 +51,6 @@ var x = d3.scale.linear()
 var chart = d3.select(".chart")
     .attr("width", width);
 
-//getting d3 to read the csv and passing one or two variables was all I could muster
-//It is difficult to debug, as one out-of-place semi-colon, parenthesis, etc. crashes the whole page :(
-
 d3.csv("NYS_GRAD_RATES_ALL.csv", type, function(error, data) {
   x.domain([0, d3.max(data, function(d) { return d.DROPOUT_CNT; })]);
 
