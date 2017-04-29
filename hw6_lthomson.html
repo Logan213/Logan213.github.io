@@ -51,7 +51,7 @@ var x = d3.scale.linear()
 var chart = d3.select(".chart")
     .attr("width", width);
 
-d3.csv("NYS_GRAD_RATES_ALL.csv", type, function(error, data) {
+d3.csv("../NYS_GRAD_RATES_ALL.csv", type, function(error, data) {
   x.domain([0, d3.max(data, function(d) { return d.DROPOUT_CNT; })]);
 
   chart.attr("height", barHeight * data.length);
