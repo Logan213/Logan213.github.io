@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Data Visualizations Using javascript</title>
+
+    <script src="//d3js.org/d3.v3.min.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+
+    <style>
+
+    .chart rect {
+      fill: teal;
+    }
+
+    .chart text {
+      fill: whitesmoke;
+      font: 12px sans-serif;
+      text-anchor: end;
+    }
+
+    h3.sansserif {
+			    font-family: Helvetica, sans-serif;
+	}
+
+    </style>
+
+    <a href="index.html", style="font-family:helvetica">Return Home</a>
+
+</head>
+
+<body>
+
+<h3 class="sansserif">Horizontal Bar using "Base" D3.js</h3>
+
+<svg class="chart"></svg>
+
+<!--Borrowed from M. Bostock's Horizontal Bar Chart Tutorial-->
+<!--https://bost.ocks.org/mike/bar/2/-->
+
+<script>
+
+var width = 1000,
+    barHeight = 30;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var chart = d3.select(".chart")
+    .attr("width", width);
+
+//getting d3 to read the csv and passing one or two variables was all I could muster
+//It is difficult to debug, as one out-of-place semi-colon, parenthesis, etc. crashes the whole page :(
+
+d3.csv("NYS_GRAD_RATES_ALL.csv", type, function(error, data) {
+  x.domain([0, d3.max(data, function(d) { return d.DROPOUT_CNT; })]);
+
+  chart.attr("height", barHeight * data.length);
+
+  var bar = chart.selectAll("g")
+      .data(data)
+    .enter().append("g")
+      .attr("transform", function(d, i) { return "translate(0," + i * barHeight + ")"; });
+
+  bar.append("rect")
+      .attr("width", function(d) { return x(d.DROPOUT_CNT); })
+      .attr("height", barHeight - 1);
+
+  bar.append("text")
+      .attr("x", function(d) { return x(d.DROPOUT_CNT) - 5; })
+      .attr("y", barHeight / 2)
+      .attr("dy", ".35em")
+      .text(function(d) { return d.SUBGROUP_NAME; });
+
+});
+
+function type(d) {
+  d.DROPOUT_CNT = +d.DROPOUT_CNT;
+  return d;
+}
+
+</script>
+
+<p>
+
+</p>
+
+<h3 class="sansserif">Bubble Chart Using Google Charts</h3>
+
+<p>Click and drag on chart to zoom. Right-click to reset.</p>
+
+<div id="chart_div2" style="width: 1200px; height: 1000px;"></div>
+
+<script type="text/javascript">
+
+    google.charts.load('current', {'packages':['corechart']});
+    google.charts.setOnLoadCallback(drawSeriesChart);
+
+    //data is hard coded in; attempts to bring in data from .csv
+    //using either jquery-csv or Google's Chart Tools Datasource
+    function drawSeriesChart() {
+
+      var data = google.visualization.arrayToDataTable([
+        ['ID',                              'Graduation %',   'Dropout %',   'Category',         'Enroll Count'],
+        ['All Students',                    84,               10,            'All Graduating',   211361],
+        ['Female',                          87,               9,             'Gender',           103124],
+        ['Male',                            82,               12,            'Gender',           108237],
+        ['American Indian',                 70,               22,            'Race/Ethnicity',   1132],
+        ['Black',                           75,               16,            'Race/Ethnicity',   38473],
+        ['Hispanic/Latino',                 74,               18,            'Race/Ethnicity',   45592],
+        ['Asian',                           89,               8,             'Race/Ethnicity',   18883],
+        ['White',                           91,               6,             'Race/Ethnicity',   105933],
+        ['Multiracial',                     82,               13,            'Race/Ethnicity',   1348],
+        ['General Ed. Students',            88,               9,             'Learning Ability', 180305],
+        ['Students w/Disabilities',         61,               19,            'Learning Ability', 31056],
+        ['Not Limited Engl. Proficient',    86,               9,             'Learning Ability', 200677],
+        ['Limited Engl. Proficient',        48,               37,            'Learning Ability', 10684],
+        ['Formerly Ltd. Engl. Proficient',  87,               9,             'Learning Ability', 3329],
+        ['Economically Disadvantaged',      79,               14,            'Socio-Economic',   90340],
+        ['No Economic Disadvantage',        88,               8,             'Socio-Economic',   121021],
+        ['Migrant',                         70,               29,            'Socio-Economic',   82],
+        ['Non-Migrant',                     84,               10,            'Socio-Economic',   221279],
+      ]);
+
+      var options = {
+        title: 'Graduation and Dropout Rates' +
+               'by Demographic Groupings (2016 Cohort)',
+        hAxis: {title: 'Graduation Ratio', textPosition: 'in', maxValue: 100},
+        vAxis: {title: 'Dropout Rate', textPosition: 'in'},
+        sizeAxis: {minSize: 10, maxSize: 40},
+        bubble: {textStyle: {fontSize: 10}},
+        legend: {position: 'bottom'},
+        explorer: {actions: ['dragToZoom', 'rightClickToReset']},
+        chartArea: {top:10, left: 50}
+      };
+
+      var chart = new google.visualization.BubbleChart(document.getElementById('chart_div2'));
+      chart.draw(data, options);
+    }
+
+    </script>
+
+
+</body>
+
+</html>
